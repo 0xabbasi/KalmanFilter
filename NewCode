@@ -1,0 +1,36 @@
+% Define the state transition matrix A
+A = [1, 1; 0, 1];
+
+% Define the measurement matrix H
+H = [1, 0];
+
+% Define the process noise covariance Q
+Q = [0.01, 0; 0, 0.01];
+
+% Define the measurement noise covariance R
+R = 1;
+
+% Initial state estimate x
+x = [0; 0];
+
+% Initial error covariance P
+P = [1, 0; 0, 1];
+
+% Measurements (replace this with your actual measurements)
+measurements = [1, 2, 3, 4, 5];
+
+% Kalman filter loop
+for k = 1:length(measurements)
+    % Prediction step
+    x_pred = A * x;
+    P_pred = A * P * A' + Q;
+    
+    % Update step
+    K = P_pred * H' * inv(H * P_pred * H' + R);
+    x = x_pred + K * (measurements(k) - H * x_pred);
+    P = (eye(2) - K * H) * P_pred;
+    
+    % Print or store the estimated state x
+    fprintf('Estimated position at step %d: %f\n', k, x(1));
+    fprintf('Estimated velocity at step %d: %f\n', k, x(2));
+end
